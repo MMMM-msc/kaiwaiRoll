@@ -19,17 +19,10 @@ namespace WpfMidiFileSelector
     public partial class MainWindow : Window
     {
         private MidiDataManager _midiDataManager;
-
+        private PianoRollRenderer _pianoRollRenderer;
 
         private Playback _playback;
         private OutputDevice _outputDevice;
-
-        private const double NoteHeight = 10.0;
-        private const double TimeScale = 0.1;
-        private const double PianoRollHeight = 128;
-        private const double TotalNoteRangeHeight = 128 * NoteHeight; // NoteNumber 全ての範囲に必要な高さ
-        private const double LeftPadding = 50.0;
-        private const double RightPadding = 100.0;
 
         private SolidColorBrush _backgroundColor = new SolidColorBrush(Colors.Black); // デフォルトは黒
         private SolidColorBrush _normalNoteColor = new SolidColorBrush(Colors.DodgerBlue); // デフォルトは青
@@ -39,6 +32,7 @@ namespace WpfMidiFileSelector
         {
 
             _midiDataManager = new MidiDataManager();
+            _pianoRollRenderer = new PianoRollRenderer();
             InitializeComponent();
 
             try
@@ -147,76 +141,11 @@ namespace WpfMidiFileSelector
                 stopButton.IsEnabled = false;
             }
 
+            _pianoRollRenderer.Render(pianoRollCanvas, _midiDataManager.Notes, _backgroundColor, _normalNoteColor);
 
-            // ★ MidiDataManager からノートリストを取得して描画メソッドに渡す (または描画メソッド内で MidiDataManager を参照する) ★
-            // ここでは DrawPianoRoll メソッド内で MidiDataManager を参照するようにします。
-            DrawPianoRoll();
 
         }
-        /// <summary>
-        /// 取得したノート情報 (_currentNotes) を元にピアノロールを描画します。
-        /// </summary>
-        private void DrawPianoRoll()
-        {
-            // 描画前に Canvas の既存の要素を全てクリアする
-            // これにより、新しいファイルを読み込むたびに前の描画が消去されます。
-            pianoRollCanvas.Children.Clear();
 
-            pianoRollCanvas.Background = _backgroundColor;
-
-            List<Note> notesToDraw = _midiDataManager.Notes;
-
-            if (notesToDraw == null || !notesToDraw.Any())
-            {
-                Debug.WriteLine("描画するノートがありません。");
-                pianoRollCanvas.Width = 0;
-                pianoRollCanvas.Height = 0;
-                return;
-            }
-
-            double yOffset = TotalNoteRangeHeight;
-            double maxTime = 0;
-
-            foreach (Note note in notesToDraw)
-            {
-                var noteRectangle = new Rectangle();
-
-                //座標と大きさを決める
-                double y = (127 - note.NoteNumber) * NoteHeight;
-                double x = note.Time * TimeScale + LeftPadding;
-
-                double width = note.Length * TimeScale;
-                if (width < 1.0) width = 1.0;
-
-                double height = NoteHeight;
-
-                noteRectangle.Width = width;
-                noteRectangle.Height = height;
-                noteRectangle.Fill = _normalNoteColor;
-
-                noteRectangle.Tag = note;
-
-                Canvas.SetLeft(noteRectangle, x);
-                Canvas.SetTop(noteRectangle, y);
-
-                pianoRollCanvas.Children.Add(noteRectangle);
-                Debug.WriteLine($" Note (Drawn): Num={note.NoteNumber}, Time={note.Time}, Length={note.Length}, Vel={note.Velocity}");
-
-                double noteEndTime = (double)note.Time + note.Length;
-                if (noteEndTime > maxTime) maxTime = noteEndTime;
-
-            }
-
-            pianoRollCanvas.Height = TotalNoteRangeHeight;
-
-            double requiredWidth = maxTime * TimeScale + LeftPadding + RightPadding;
-            pianoRollCanvas.Width = requiredWidth;
-
-
-            Debug.WriteLine("ピアノロールの描画を完了しました。");
-            Debug.WriteLine($"計算された Canvas Width: {pianoRollCanvas.Width}, Height: {pianoRollCanvas.Height}");
-
-        }
 
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
@@ -230,6 +159,7 @@ namespace WpfMidiFileSelector
             }
             // 既存の Playback オブジェクトがあれば一度破棄する
             _playback?.Dispose();
+            _pianoRollRenderer.ResetAllNoteColors(_normalNoteColor);
 
             try
             {
@@ -290,6 +220,7 @@ namespace WpfMidiFileSelector
                 // 停止したら Playback オブジェクトを破棄することも検討
                 // _playback?.Dispose();
                 // _playback = null;
+                _pianoRollRenderer.ResetAllNoteColors(_normalNoteColor);
             }
         }
         private void Playback_NotePlaybackStarted(object sender, NotesEventArgs e) // ★ シグネチャを NotesEventArgs に変更 ★
@@ -305,7 +236,6 @@ namespace WpfMidiFileSelector
                     return; // ノートがない場合はここでメソッドを終了
                 }
 
-
                 // ★ イベント引数 e.Notes から再生開始されたノートのコレクションを取得 ★
                 // NotesEventArgs に Notes プロパティがあることを期待します。
                 IEnumerable<Note> playedNotes = e.Notes;
@@ -315,50 +245,12 @@ namespace WpfMidiFileSelector
                 // 同時に開始された各ノートについて処理
                 foreach (var playedNote in playedNotes)
                 {
-                    Debug.WriteLine($"  Played Note: Num={playedNote.NoteNumber}, Time={playedNote.Time}, Length={playedNote.Length}, Vel={playedNote.Velocity}");
-
-                    // 再生開始されたノートに対応する描画された Rectangle を探し出す
-                    // Canvas の子要素 (Rectangle) を調べて、Tag に設定した Note オブジェクトと比較します。
-                    var targetRectangle = pianoRollCanvas.Children.OfType<Rectangle>()
-                        .FirstOrDefault(rect =>
-                        {
-                            // Tag に Note オブジェクトが設定されているか確認
-                            if (rect.Tag is Note note)
-                            {
-                                bool numMatch = note.NoteNumber == playedNote.NoteNumber;
-                                bool timeMatch = note.Time == playedNote.Time;
-                                Debug.WriteLine($"    Comparing Tag Note (Num={note.NoteNumber}, Time={note.Time}) with Played Note (Num={playedNote.NoteNumber}, Time={playedNote.Time}). NumMatch={numMatch}, TimeMatch={timeMatch}");
-                                // ★ Tag の Note オブジェクトが、再生開始された playedNote と同じであるか比較 ★
-                                // DryWetMidi の Note クラスは、デフォルトで値の等価性 (音高, 時間, 長さなど) を比較します。
-                                return numMatch && timeMatch; ;
-                            }
-                            return false; // Tag が Note でない場合はスキップ
-                        });
-
-                    // 対応する Rectangle が見つかった場合
-                    if (targetRectangle != null)
-                    {
-                        // ★ ノートの色をハイライト色に変更 ★
-                        targetRectangle.Fill = _playingNoteColor; // ハードコードされた Colors.Yellow から変更
-                    }
-                    else
-                    {
-                        // 対応する Rectangle が見つからなかった場合に警告を出力
-                        Debug.WriteLine($"  Warning: Could not find Rectangle for Played Note Num={playedNote.NoteNumber}, Time={playedNote.Time}");
-                        // デバッグのため、Canvas の子要素の Tag 情報を全て出力してみる (必要な場合のみコメント解除)
-                        // Debug.WriteLine("  Canvas children Tag info:");
-                        // foreach (var child in pianoRollCanvas.Children.OfType<Rectangle>())
-                        // {
-                        //     if (child.Tag is Note tagNote)
-                        //     {
-                        //         Debug.WriteLine($"    Tag Note: Num={tagNote.NoteNumber}, Time={tagNote.Time}, Length={tagNote.Length}");
-                        //     }
-                        // }
-                    }
+                    _pianoRollRenderer.SetNoteColor(playedNote, _playingNoteColor);
                 }
 
             });
         }
+
         private void Playback_NotePlaybackFinished(object sender, NotesEventArgs e)
         {
             Dispatcher.Invoke(() =>
@@ -375,32 +267,7 @@ namespace WpfMidiFileSelector
 
                 foreach (var finishedNote in finishedNotes)
                 {
-                    Debug.WriteLine($"  Num={finishedNote.NoteNumber}, Time={finishedNote.Time}, Length={finishedNote.Length}");
-
-                    var targetRectangle = pianoRollCanvas.Children.OfType<Rectangle>()
-                    .FirstOrDefault(rect =>
-                    {
-                        if (rect.Tag is Note note)
-                        {
-                            bool numMatch = note.NoteNumber == finishedNote.NoteNumber;
-                            bool timeMatch = note.Time == finishedNote.Time;
-                            Debug.WriteLine($"    Comparing Tag Note (Num={note.NoteNumber}, Time={note.Time}) with Finished Note (Num={finishedNote.NoteNumber}, Time={finishedNote.Time}). NumMatch={numMatch}, TimeMatch={timeMatch}");
-
-                            return numMatch && timeMatch;
-                        }
-                        return false;
-                    });
-
-                    if (targetRectangle != null)
-                    {
-                        targetRectangle.Fill = _normalNoteColor;
-                        Debug.WriteLine($"  Found and reset color for Rectangle for Note Num={finishedNote.NoteNumber}, Time={finishedNote.Time}");
-                    }
-                    else
-                    {
-                        // 対応する Rectangle が見つからなかった場合に警告を出力
-                        Debug.WriteLine($"  Warning: Could not find Rectangle for Finished Note Num={finishedNote.NoteNumber}, Time={finishedNote.Time}");
-                    }
+                    _pianoRollRenderer.SetNoteColor(finishedNote, _normalNoteColor);
                 }
 
             });
@@ -445,7 +312,7 @@ namespace WpfMidiFileSelector
             {
                 _normalNoteColor = selectedBrush;
                 // 再生していないノートの色が変わったので、画面を再描画して反映
-                DrawPianoRoll(); // 再描画で全てのノートが新しい通常色になります
+                _pianoRollRenderer.Render(pianoRollCanvas, _midiDataManager.Notes, _backgroundColor, _normalNoteColor);
             }
             else if (comboBox == playingNoteColorComboBox)
             {
