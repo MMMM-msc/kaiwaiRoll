@@ -18,9 +18,8 @@ namespace WpfMidiFileSelector
     /// </summary>
     public partial class MainWindow : Window
     {
+        private MidiDataManager _midiDataManager;
 
-        private MidiFile _currentMidiFile;
-        private List<Note> _currentNotes;
 
         private Playback _playback;
         private OutputDevice _outputDevice;
@@ -38,6 +37,8 @@ namespace WpfMidiFileSelector
 
         public MainWindow()
         {
+
+            _midiDataManager = new MidiDataManager();
             InitializeComponent();
 
             try
@@ -112,59 +113,45 @@ namespace WpfMidiFileSelector
             string selectedFilePath = openFileDialog.FileName;
             filePathTextBox.Text = selectedFilePath;
 
-            try
+            bool loadSuccess = _midiDataManager.LoadFile(selectedFilePath);
+
+            if (!loadSuccess)
             {
-                _currentMidiFile = MidiFile.Read(selectedFilePath);
+                // MidiDataManager の LoadFile 内でエラーメッセージはログに出力されているので、
+                // 必要であればユーザー向けのメッセージボックスを表示することも検討
+                MessageBox.Show("MIDIファイルの読み込みに失敗しました。詳細はログを確認してください。", "読み込みエラー", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                MessageBox.Show("MIDIファイルを正常に読み込みました。", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
+                // 読み込み失敗したので、データをクリアし、ボタンを無効にする
+                _midiDataManager.ClearData(); // LoadFile 内でもクリアされますが、念のため
+                // 描画領域もクリア
+                pianoRollCanvas.Children.Clear();
+                pianoRollCanvas.Width = 0;
+                pianoRollCanvas.Height = 0;
 
-                Debug.WriteLine($"読み込みファイル: {selectedFilePath}");
-                Debug.WriteLine($"タイムフォーマット: {_currentMidiFile.TimeDivision}");
-                Debug.WriteLine($"トラック数: {_currentMidiFile.Chunks.OfType<TrackChunk>().Count()}");
-
-                _currentNotes = _currentMidiFile.GetNotes().ToList();
-                Debug.WriteLine($"含まれるノート数:{_currentNotes.Count()}");
-
-                foreach (Note note in _currentNotes)
-                {
-                    Debug.WriteLine($" Note: Num={note.NoteNumber}, Time={note.Length}, Vel={note.Velocity}");
-                }
-
-                if (_currentMidiFile != null && _outputDevice != null)
-                {
-                    playButton.IsEnabled = true;
-                    stopButton.IsEnabled = false;
-                }
-                else
-                {
-                    playButton.IsEnabled = false;
-                    stopButton.IsEnabled = false;
-                }
-
-                DrawPianoRoll();
-
+                playButton.IsEnabled = false;
+                stopButton.IsEnabled = false;
+                return;
             }
-            catch (MidiException ex)
+
+            MessageBox.Show("MIDIファイルを正常に読み込みました。", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            if (_midiDataManager.MidiFile != null && _outputDevice != null)
             {
-                // MIDIファイル固有のエラー
-                _currentMidiFile = null; // 読み込み失敗した場合は null にする
-                MessageBox.Show($"MIDIファイルの読み込み中にエラーが発生しました: {ex.Message}", "読み込みエラー", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"MIDIファイルの読み込みエラー: {ex}"); // 詳細をコンソールに出力
+                playButton.IsEnabled = true;
+                stopButton.IsEnabled = false;
             }
-            catch (FileNotFoundException ex)
+            else
             {
-                // ファイルが見つからないエラー
-                _currentMidiFile = null;
-                MessageBox.Show($"指定されたファイルが見つかりません: {selectedFilePath}", "ファイルが見つかりません", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"ファイルNotFoundエラー: {ex}");
+                // デバイスがない場合は再生関連ボタンは無効のまま
+                playButton.IsEnabled = false;
+                stopButton.IsEnabled = false;
             }
-            catch (Exception ex)
-            {
-                // その他の予期しないエラー
-                _currentMidiFile = null;
-                MessageBox.Show($"ファイルの読み込み中に予期しないエラーが発生しました: {ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"予期しないエラー: {ex}");
-            }
+
+
+            // ★ MidiDataManager からノートリストを取得して描画メソッドに渡す (または描画メソッド内で MidiDataManager を参照する) ★
+            // ここでは DrawPianoRoll メソッド内で MidiDataManager を参照するようにします。
+            DrawPianoRoll();
+
         }
         /// <summary>
         /// 取得したノート情報 (_currentNotes) を元にピアノロールを描画します。
@@ -177,7 +164,9 @@ namespace WpfMidiFileSelector
 
             pianoRollCanvas.Background = _backgroundColor;
 
-            if (_currentMidiFile == null || !_currentNotes.Any())
+            List<Note> notesToDraw = _midiDataManager.Notes;
+
+            if (notesToDraw == null || !notesToDraw.Any())
             {
                 Debug.WriteLine("描画するノートがありません。");
                 pianoRollCanvas.Width = 0;
@@ -188,7 +177,7 @@ namespace WpfMidiFileSelector
             double yOffset = TotalNoteRangeHeight;
             double maxTime = 0;
 
-            foreach (Note note in _currentNotes)
+            foreach (Note note in notesToDraw)
             {
                 var noteRectangle = new Rectangle();
 
@@ -231,7 +220,10 @@ namespace WpfMidiFileSelector
 
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_currentMidiFile == null || _outputDevice == null)
+
+            MidiFile fileToPlay = _midiDataManager.MidiFile;
+
+            if (fileToPlay == null || _outputDevice == null)
             {
                 MessageBox.Show("再生する MIDI ファイルが読み込まれていないか、出力デバイスが利用できません。", "再生エラー", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -241,7 +233,7 @@ namespace WpfMidiFileSelector
 
             try
             {
-                _playback = _currentMidiFile.GetPlayback(_outputDevice);
+                _playback = fileToPlay.GetPlayback(_outputDevice);
                 _playback.NotesPlaybackStarted += Playback_NotePlaybackStarted;
                 _playback.NotesPlaybackFinished += Playback_NotePlaybackFinished;
                 _playback.Finished += Playback_Finished;
