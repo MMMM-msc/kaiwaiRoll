@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfMidiFileSelector"
         mc:Ignorable="d"
-        Title="MiDIファイル選択と表示" Height="700" Width="800"> <Grid>
+        Title="MiDIファイル選択と表示" Height="700" Width="800">
+
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -21,29 +23,34 @@
                 <Button Name="stopButton" Content="停止" Click="StopButton_Click" IsEnabled="False"/>
             </StackPanel>
 
-            <StackPanel Margin="0,10,0,0"> <Label Content="表示色の設定:" FontWeight="Bold"/>
+            <StackPanel Margin="0,10,0,0">
+                <Label Content="表示色の設定:" FontWeight="Bold"/>
 
                 <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                    <Label Content="背景色:"/>
-                    <ComboBox Name="backgroundColorComboBox" Width="150" SelectionChanged="ColorComboBox_SelectionChanged"/>
+                    <Label Content="背景色:" Width="100"/>
+                    <ComboBox Name="backgroundColorComboBox" Width="100" SelectionChanged="ColorComboBox_SelectionChanged" Margin="0,0,5,0"/>
+                    <TextBox Name="backgroundColorHexTextBox" Width="100" TextChanged="HexTextBox_TextChanged" Visibility="Collapsed"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                    <Label Content="通常ノート色:"/>
-                     <ComboBox Name="normalNoteColorComboBox" Width="150" SelectionChanged="ColorComboBox_SelectionChanged"/>
+                    <Label Content="通常ノート色:" Width="100"/>
+                    <ComboBox Name="normalNoteColorComboBox" Width="100" SelectionChanged="ColorComboBox_SelectionChanged" Margin="0,0,5,0"/>
+                    <TextBox Name="normalNoteColorHexTextBox" Width="100" TextChanged="HexTextBox_TextChanged" Visibility="Collapsed"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                    <Label Content="再生ノート色:"/>
-                     <ComboBox Name="playingNoteColorComboBox" Width="150" SelectionChanged="ColorComboBox_SelectionChanged"/>
+                    <Label Content="再生ノート色:" Width="100"/>
+                    <ComboBox Name="playingNoteColorComboBox" Width="100" SelectionChanged="ColorComboBox_SelectionChanged" Margin="0,0,5,0"/>
+                    <TextBox Name="playingNoteColorHexTextBox" Width="100" TextChanged="HexTextBox_TextChanged" Visibility="Collapsed"/>
                 </StackPanel>
 
             </StackPanel>
-            </StackPanel>
+        </StackPanel>
 
         <ScrollViewer Grid.Row="1" Margin="10"
                       HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto">
-            <Canvas Name="pianoRollCanvas"/> </ScrollViewer>
+            <Canvas Name="pianoRollCanvas"/>
+        </ScrollViewer>
     </Grid>
 </Window>
