@@ -343,7 +343,7 @@ namespace WpfMidiFileSelector
 
             // 対応する ComboBox の選択が "Custom Hex" でない場合は処理しない
             // ComboBox で "Custom Hex" 以外が選択されている場合、TextBox の内容は無視されます。
-            if (correspondingComboBox.SelectedItem as string != "Custom Hex")
+            if (correspondingComboBox.SelectedItem as string != ColorOptionNames.CustomHex)
             {
                 return;
             }
