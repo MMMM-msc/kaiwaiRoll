@@ -18,12 +18,12 @@
 
             <Style TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="x12y16pxMaruMonica" />
-                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontSize" Value="18" />
             </Style>
 
             <Style TargetType="TextBox" >
                 <Setter Property="FontFamily" Value="x12y16pxMaruMonica" />
-                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontSize" Value="18" />
             </Style>
 
         </ResourceDictionary>

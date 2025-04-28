@@ -92,8 +92,6 @@ namespace WpfMidiFileSelector
 
             if (!loadSuccess)
             {
-                // MidiDataManager の LoadFile 内でエラーメッセージはログに出力されているので、
-                // 必要であればユーザー向けのメッセージボックスを表示することも検討
                 MessageBox.Show("MIDIファイルの読み込みに失敗しました。詳細はログを確認してください。", "読み込みエラー", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 // 読み込み失敗したので、データをクリアし、ボタンを無効にする
@@ -107,8 +105,6 @@ namespace WpfMidiFileSelector
                 stopButton.IsEnabled = false;
                 return;
             }
-
-            MessageBox.Show("MIDIファイルを正常に読み込みました。", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
 
             if (_midiDataManager.MidiFile != null && _playbackManager.OutputDevice != null)
             {
