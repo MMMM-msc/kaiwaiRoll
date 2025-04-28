@@ -31,19 +31,19 @@
                     <!-- 背景色 -->
                     <StackPanel Orientation="Horizontal" Margin="0,0,10,0">
                         <Label Content="背景色:" Width="55" VerticalAlignment="Center"/>
-                        <ComboBox Name="backgroundColorComboBox" Width="100" SelectionChanged="ColorComboBox_SelectionChanged" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                        <ComboBox Name="backgroundColorComboBox" Width="120" SelectionChanged="ColorComboBox_SelectionChanged" Margin="0,0,5,0" VerticalAlignment="Center"/>
                         <TextBox Name="backgroundColorHexTextBox" Width="100" TextChanged="HexTextBox_TextChanged" Visibility="Collapsed" VerticalAlignment="Center"/>
                     </StackPanel>
                     <!-- 通常ノート色 -->
                     <StackPanel Orientation="Horizontal" Margin="20,0,10,0">
                         <Label Content="通常ノート色:" Width="95" VerticalAlignment="Center"/>
-                        <ComboBox Name="normalNoteColorComboBox" Width="100" SelectionChanged="ColorComboBox_SelectionChanged" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                        <ComboBox Name="normalNoteColorComboBox" Width="120" SelectionChanged="ColorComboBox_SelectionChanged" Margin="0,0,5,0" VerticalAlignment="Center"/>
                         <TextBox Name="normalNoteColorHexTextBox" Width="100" TextChanged="HexTextBox_TextChanged" Visibility="Collapsed" VerticalAlignment="Center"/>
                     </StackPanel>
                     <!-- 再生ノート色 -->
                     <StackPanel Orientation="Horizontal">
                         <Label Content="再生ノート色:" Width="95" VerticalAlignment="Center"/>
-                        <ComboBox Name="playingNoteColorComboBox" Width="100" SelectionChanged="ColorComboBox_SelectionChanged" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                        <ComboBox Name="playingNoteColorComboBox" Width="120" SelectionChanged="ColorComboBox_SelectionChanged" Margin="0,0,5,0" VerticalAlignment="Center"/>
                         <TextBox Name="playingNoteColorHexTextBox" Width="100" TextChanged="HexTextBox_TextChanged" Visibility="Collapsed" VerticalAlignment="Center"/>
                     </StackPanel>
                 </StackPanel>
