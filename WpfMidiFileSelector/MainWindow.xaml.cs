@@ -74,6 +74,7 @@ namespace WpfMidiFileSelector
         }
 
 
+
         private void SelectFileButton_Click(object sender, RoutedEventArgs e)
         {
             var openFileDialog = new OpenFileDialog();
@@ -120,6 +121,9 @@ namespace WpfMidiFileSelector
                 playButton.IsEnabled = false;
                 stopButton.IsEnabled = false;
             }
+            this.Height = 840; // ウィンドウの高さを変更
+            this.Width = 1490; // ウィンドウの幅を変更
+
             fileSelectDividerTop.Visibility = Visibility.Visible;
             fileSelectDividerBottom.Visibility = Visibility.Visible;
             colorSelection.Visibility = Visibility.Visible;

@@ -9,7 +9,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="misaki_gothic.ttf" />
+    <None Remove="misaki_gothic_2nd.ttf" />
+    <None Remove="misaki_mincho.ttf" />
+    <None Remove="x12y16pxMaruMonica.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MahApps.Metro" Version="2.4.10" />
+    <PackageReference Include="MaterialDesignColors" Version="5.2.1" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
+    <PackageReference Include="MaterialDesignThemes.MahApps" Version="5.2.1" />
     <PackageReference Include="Melanchall.DryWetMidi" Version="7.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="misaki_gothic.ttf" />
+    <Resource Include="misaki_gothic_2nd.ttf" />
+    <Resource Include="misaki_mincho.ttf" />
+    <Resource Include="x12y16pxMaruMonica.ttf" />
   </ItemGroup>
 
 </Project>
