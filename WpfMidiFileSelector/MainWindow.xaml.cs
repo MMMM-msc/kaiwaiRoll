@@ -52,7 +52,7 @@ namespace WpfMidiFileSelector
             backgroundColorComboBox.ItemsSource = new List<string> { ColorOptionNames.Green, ColorOptionNames.Blue, ColorOptionNames.CustomHex };
             normalNoteColorComboBox.ItemsSource = new List<string> { ColorOptionNames.Default, ColorOptionNames.CustomHex };
             playingNoteColorComboBox.ItemsSource = new List<string> { ColorOptionNames.Default, ColorOptionNames.CustomHex };
-            
+
             backgroundColorComboBox.SelectedItem = ColorOptionNames.Green;
             normalNoteColorComboBox.SelectedItem = ColorOptionNames.Default;
             playingNoteColorComboBox.SelectedItem = ColorOptionNames.Default;
@@ -120,7 +120,11 @@ namespace WpfMidiFileSelector
                 playButton.IsEnabled = false;
                 stopButton.IsEnabled = false;
             }
-
+            fileSelectDividerTop.Visibility = Visibility.Visible;
+            fileSelectDividerBottom.Visibility = Visibility.Visible;
+            colorSelection.Visibility = Visibility.Visible;
+            playButton.Visibility = Visibility.Visible;
+            stopButton.Visibility = Visibility.Visible;
             _pianoRollRenderer.Render(pianoRollCanvas, _midiDataManager.Notes, _colorSettingsManager.BackgroundColorBrush, _colorSettingsManager.NormalNoteColorBrush);
 
 
@@ -163,7 +167,7 @@ namespace WpfMidiFileSelector
             _pianoRollRenderer.ResetAllNoteColors(_colorSettingsManager.NormalNoteColorBrush);
         }
 
-    
+
 
         // これらのメソッドの中で、UI の更新や PianoRollRenderer への指示を行います。
         private void PlaybackManager_NoteStarted(object sender, NotesEventArgs e)
@@ -369,7 +373,7 @@ namespace WpfMidiFileSelector
 
         // ★ TryConvertHexToColor() ヘルパーメソッドは ColorSettingsManager に移動します ★
         // private bool TryConvertHexToColor(string hexString, out Color color) { ... } // このメソッド定義は削除します
-   
+
 
     }
 }

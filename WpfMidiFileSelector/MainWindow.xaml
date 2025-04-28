@@ -1,56 +1,77 @@
 ﻿<Window x:Class="WpfMidiFileSelector.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfMidiFileSelector"
-        mc:Ignorable="d"
-        Title="MiDIファイル選択と表示" Height="700" Width="800">
+       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+       xmlns:local="clr-namespace:WpfMidiFileSelector"
+       mc:Ignorable="d"
+       Title="MiDIファイル選択と表示" Height="700" Width="800">
+
+
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <!-- ファイル選択および色選択の部分 -->
         <StackPanel Margin="10" VerticalAlignment="Top" Grid.Row="0">
-            <Label Content="MIDIファイルパス:" />
-            <TextBox Name="filePathTextBox" IsReadOnly="True" Margin="0,0,0,10"/>
 
-            <StackPanel Orientation="Horizontal">
-                <Button Content="ファイルを選択して表示" Click="SelectFileButton_Click" Margin="0,0,10,0"/>
-                <Button Name="playButton" Content="再生" Click="PlayButton_Click" Margin="0,0,5,0" IsEnabled="False"/>
-                <Button Name="stopButton" Content="停止" Click="StopButton_Click" IsEnabled="False"/>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Button Content="midiファイルを選択してください" Click="SelectFileButton_Click" Margin="0,0,10,0" Padding="7,5" />
+                <TextBox Name="filePathTextBox" IsReadOnly="True" Width="600" VerticalAlignment="Center" />
             </StackPanel>
 
-            <StackPanel Margin="0,10,0,0">
-                <Label Content="表示色の設定:" FontWeight="Bold"/>
+            <!-- 薄い線による区切り -->
+            <Border x:Name="fileSelectDividerTop" Height="1" Background="LightGray" Margin="0,10,0,10" Visibility="Collapsed"/>
 
+            <StackPanel Margin="0,0,0,0" Name="colorSelection" Visibility="Collapsed">
+                <Label Content="表示色の設定" FontWeight="Bold"/>
                 <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                    <Label Content="背景色:" Width="100"/>
-                    <ComboBox Name="backgroundColorComboBox" Width="100" SelectionChanged="ColorComboBox_SelectionChanged" Margin="0,0,5,0"/>
-                    <TextBox Name="backgroundColorHexTextBox" Width="100" TextChanged="HexTextBox_TextChanged" Visibility="Collapsed"/>
+                    <!-- 背景色 -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,10,0">
+                        <Label Content="背景色:" Width="50" VerticalAlignment="Center"/>
+                        <ComboBox Name="backgroundColorComboBox" Width="100" SelectionChanged="ColorComboBox_SelectionChanged" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                        <TextBox Name="backgroundColorHexTextBox" Width="100" TextChanged="HexTextBox_TextChanged" Visibility="Collapsed" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <!-- 通常ノート色 -->
+                    <StackPanel Orientation="Horizontal" Margin="20,0,10,0">
+                        <Label Content="通常ノート色:" Width="70" VerticalAlignment="Center"/>
+                        <ComboBox Name="normalNoteColorComboBox" Width="100" SelectionChanged="ColorComboBox_SelectionChanged" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                        <TextBox Name="normalNoteColorHexTextBox" Width="100" TextChanged="HexTextBox_TextChanged" Visibility="Collapsed" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <!-- 再生ノート色 -->
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="再生ノート色:" Width="70" VerticalAlignment="Center"/>
+                        <ComboBox Name="playingNoteColorComboBox" Width="100" SelectionChanged="ColorComboBox_SelectionChanged" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                        <TextBox Name="playingNoteColorHexTextBox" Width="100" TextChanged="HexTextBox_TextChanged" Visibility="Collapsed" VerticalAlignment="Center"/>
+                    </StackPanel>
                 </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                    <Label Content="通常ノート色:" Width="100"/>
-                    <ComboBox Name="normalNoteColorComboBox" Width="100" SelectionChanged="ColorComboBox_SelectionChanged" Margin="0,0,5,0"/>
-                    <TextBox Name="normalNoteColorHexTextBox" Width="100" TextChanged="HexTextBox_TextChanged" Visibility="Collapsed"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                    <Label Content="再生ノート色:" Width="100"/>
-                    <ComboBox Name="playingNoteColorComboBox" Width="100" SelectionChanged="ColorComboBox_SelectionChanged" Margin="0,0,5,0"/>
-                    <TextBox Name="playingNoteColorHexTextBox" Width="100" TextChanged="HexTextBox_TextChanged" Visibility="Collapsed"/>
-                </StackPanel>
-
             </StackPanel>
+
+            <!-- 薄い線による区切り -->
+            <Border x:Name="fileSelectDividerBottom" 
+                    Height="1" 
+                    Background="LightGray" 
+                    Margin="0,10,0,10" 
+                    Visibility="Collapsed"/>
         </StackPanel>
 
+        <!-- ピアノロール描画部分 -->
         <ScrollViewer Grid.Row="1" Margin="10"
-                      HorizontalScrollBarVisibility="Auto"
-                      VerticalScrollBarVisibility="Auto">
+                     HorizontalScrollBarVisibility="Auto"
+                     VerticalScrollBarVisibility="Auto">
             <Canvas Name="pianoRollCanvas"/>
         </ScrollViewer>
+
+        <!-- 再生/停止ボタン (ピアノロールの下) -->
+        <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="2" HorizontalAlignment="Center">
+            <Button Name="playButton" Content="再生" Click="PlayButton_Click" Margin="0,0,5,0"
+           IsEnabled="False" Visibility="Collapsed" Height="40" Width="100" FontSize="16"/>
+            <Button Name="stopButton" Content="停止" Click="StopButton_Click"
+           IsEnabled="False" Visibility="Collapsed" Height="40" Width="100" FontSize="16"/>
+        </StackPanel>
     </Grid>
 </Window>
