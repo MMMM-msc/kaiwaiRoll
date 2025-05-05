@@ -6,6 +6,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <AssemblyName>kaiwaiRoll</AssemblyName>
+    <ApplicationIcon>favicon (1).ico</ApplicationIcon>
+    <PackageIcon></PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +16,10 @@
     <None Remove="misaki_gothic_2nd.ttf" />
     <None Remove="misaki_mincho.ttf" />
     <None Remove="x12y16pxMaruMonica.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="favicon (1).ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,6 +35,13 @@
     <Resource Include="misaki_gothic_2nd.ttf" />
     <Resource Include="misaki_mincho.ttf" />
     <Resource Include="x12y16pxMaruMonica.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ex.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
