@@ -28,10 +28,14 @@ namespace WpfMidiFileSelector
         /// </summary>
         public ColorSettingsManager()
         {
-            // ★ デフォルト色の初期設定 ★
             _backgroundColorBrush = new SolidColorBrush(Colors.Green);
-            _normalNoteColorBrush = new SolidColorBrush(Colors.LightGray);
-            _playingNoteColorBrush = new SolidColorBrush(Colors.White); // XAML と合わせるために PlayingColorBrush にしておきます。
+
+            // 定数を使用して色を取得
+            Color normalNoteColor = (Color)ColorConverter.ConvertFromString(ColorConstants.NormalNoteColor);
+            _normalNoteColorBrush = new SolidColorBrush(normalNoteColor);
+
+            Color playingColor = (Color)ColorConverter.ConvertFromString(ColorConstants.PlayingNoteColor);
+            _playingNoteColorBrush = new SolidColorBrush(playingColor);
         }
 
         /// <summary>
@@ -49,28 +53,28 @@ namespace WpfMidiFileSelector
                 // "色コードで指定" が選択されている場合
                 if (!TryConvertHexToColor(hexValue, out finalColor))
                 {
-                    // 解析失敗時はデフォルト色に戻すなどの処理
-                    finalColor = Colors.Green; // フォールバック色（背景のデフォルト）
-                    Debug.WriteLine($"ColorSettingsManager: Invalid Hex for background: {hexValue}. Using default Green.");
+                    // 解析失敗時は定数のデフォルト色を使用
+                    finalColor = (Color)ColorConverter.ConvertFromString(ColorConstants.BackgroundGreenColor);
+                    Debug.WriteLine($"ColorSettingsManager: Invalid Hex for background: {hexValue}. Using default {ColorConstants.BackgroundGreenColor}.");
                 }
             }
             else if (option == ColorOptionNames.Green)
             {
-                finalColor = Colors.Green;
+                finalColor = (Color)ColorConverter.ConvertFromString(ColorConstants.BackgroundGreenColor);
             }
             else if (option == ColorOptionNames.Blue)
             {
-                finalColor = Colors.Blue;
+                finalColor = (Color)ColorConverter.ConvertFromString(ColorConstants.BackgroundBlueColor);
             }
             else // 想定外のオプションの場合のフォールバック
             {
-                finalColor = Colors.Green; // デフォルト色
-                Debug.WriteLine($"ColorSettingsManager: Unexpected option for background: {option}. Using default Green.");
+                finalColor = (Color)ColorConverter.ConvertFromString(ColorConstants.BackgroundGreenColor);
+                Debug.WriteLine($"ColorSettingsManager: Unexpected option for background: {option}. Using default {ColorConstants.BackgroundGreenColor}.");
             }
 
             // ★ 内部の Brush フィールドを更新 ★
             _backgroundColorBrush = new SolidColorBrush(finalColor);
-            return finalColor; // 適用された Color を返すと、呼び出し元（MainWindow）でその色を使って UI を更新しやすいです。
+            return finalColor;
         }
 
         /// <summary>
@@ -88,19 +92,21 @@ namespace WpfMidiFileSelector
                 // "色コードで指定" が選択されている場合
                 if (!TryConvertHexToColor(hexValue, out finalColor))
                 {
-                    // 解析失敗時はデフォルト色に戻す
-                    finalColor = Colors.LightGray; // フォールバック色（通常ノートのデフォルト）
-                    Debug.WriteLine($"ColorSettingsManager: Invalid Hex for normal note: {hexValue}. Using default LightGray.");
+                    // 解析失敗時は定数のデフォルト色を使用
+                    finalColor = (Color)ColorConverter.ConvertFromString(ColorConstants.NormalNoteColor);
+                    Debug.WriteLine($"ColorSettingsManager: Invalid Hex for normal note: {hexValue}. Using default {ColorConstants.NormalNoteColor}.");
                 }
             }
             else if (option == ColorOptionNames.Default)
             {
-                finalColor = Colors.LightGray; // デフォルト色
+                // デフォルト色に定数を使用
+                finalColor = (Color)ColorConverter.ConvertFromString(ColorConstants.NormalNoteColor);
             }
             else // 想定外のオプションの場合
             {
-                finalColor = Colors.LightGray; // デフォルト色
-                Debug.WriteLine($"ColorSettingsManager: Unexpected option for normal note: {option}. Using default LightGray.");
+                // デフォルト色に定数を使用
+                finalColor = (Color)ColorConverter.ConvertFromString(ColorConstants.NormalNoteColor);
+                Debug.WriteLine($"ColorSettingsManager: Unexpected option for normal note: {option}. Using default {ColorConstants.NormalNoteColor}.");
             }
 
             // ★ 内部の Brush フィールドを更新 ★
@@ -114,7 +120,7 @@ namespace WpfMidiFileSelector
         /// <param name="option">選択されたオプション名（例: "デフォルト色", "色コードで指定"）。</param>
         /// <param name="hexValue">オプションが「色コードで指定」の場合の Hex 文字列。</param>
         /// <returns>適用された最終的な Color。</returns>
-        public Color ApplyPlayingColorSetting(string option, string hexValue) // XAML と合わせるために PlayingColorSetting にしておきます。
+        public Color ApplyPlayingColorSetting(string option, string hexValue)
         {
             Color finalColor;
 
@@ -123,19 +129,21 @@ namespace WpfMidiFileSelector
                 // "色コードで指定" が選択されている場合
                 if (!TryConvertHexToColor(hexValue, out finalColor))
                 {
-                    // 解析失敗時はデフォルト色に戻す
-                    finalColor = Colors.White; // フォールバック色（再生ノートのデフォルト）
-                    Debug.WriteLine($"ColorSettingsManager: Invalid Hex for playing note: {hexValue}. Using default White.");
+                    // 解析失敗時は定数のデフォルト色を使用
+                    finalColor = (Color)ColorConverter.ConvertFromString(ColorConstants.PlayingNoteColor);
+                    Debug.WriteLine($"ColorSettingsManager: Invalid Hex for playing note: {hexValue}. Using default {ColorConstants.PlayingNoteColor}.");
                 }
             }
             else if (option == ColorOptionNames.Default)
             {
-                finalColor = Colors.White; // デフォルト色
+                // デフォルト色に定数を使用
+                finalColor = (Color)ColorConverter.ConvertFromString(ColorConstants.PlayingNoteColor);
             }
             else // 想定外のオプションの場合
             {
-                finalColor = Colors.White; // デフォルト色
-                Debug.WriteLine($"ColorSettingsManager: Unexpected option for playing note: {option}. Using default White.");
+                // デフォルト色に定数を使用
+                finalColor = (Color)ColorConverter.ConvertFromString(ColorConstants.PlayingNoteColor);
+                Debug.WriteLine($"ColorSettingsManager: Unexpected option for playing note: {option}. Using default {ColorConstants.PlayingNoteColor}.");
             }
 
             // ★ 内部の Brush フィールドを更新 ★
