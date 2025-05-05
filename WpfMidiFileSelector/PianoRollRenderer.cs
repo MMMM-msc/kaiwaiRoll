@@ -18,7 +18,7 @@ namespace WpfMidiFileSelector
         private const double RightPadding = 100.0;
         private const double TotalNoteRangeHeight = 128 * NoteHeight; // NoteNumber 全ての範囲に必要な高さ
 
-        private Dictionary<(int NoteNumber,long Time), Rectangle> _noteToRectangleMap;
+        private Dictionary<(int NoteNumber, long Time), Rectangle> _noteToRectangleMap;
 
         public PianoRollRenderer()
         {
@@ -32,7 +32,7 @@ namespace WpfMidiFileSelector
         /// <param name="notes">描画するノートのリスト。</param>
         /// <param name="backgroundColor">背景色。</param>
         /// <param name="normalNoteColor">再生していないノートの色。</param>
-        public void Render(Canvas canvas,List<Note> notes, SolidColorBrush backgroundColor, SolidColorBrush normalNoteColor)
+        public void Render(Canvas canvas, List<Note> notes, SolidColorBrush backgroundColor, SolidColorBrush normalNoteColor)
         {
             if (canvas == null)
             {
@@ -79,6 +79,8 @@ namespace WpfMidiFileSelector
                 // 矩形の塗りつぶし色を「再生していないノートの色」に設定
                 noteRectangle.Fill = normalNoteColor;
 
+                noteRectangle.Stroke = null;
+
                 // Tag に Note オブジェクト自体を格納
                 noteRectangle.Tag = note;
                 // Note と Rectangle のマッピングを辞書に登録
@@ -86,7 +88,7 @@ namespace WpfMidiFileSelector
                 {
                     _noteToRectangleMap[(note.NoteNumber, note.Time)] = noteRectangle;
                 }
-                catch(ArgumentException ex)
+                catch (ArgumentException ex)
                 {
                     Debug.WriteLine($"PianoRollRenderer: Warning: Duplicate key when adding Note to map (Num={note.NoteNumber}, Time={note.Time}). A rectangle for this key already exists.");
                 }
