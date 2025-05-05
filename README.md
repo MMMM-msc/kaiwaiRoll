@@ -33,7 +33,7 @@ MIDIファイルの内容をピアノロール形式で視覚的に表示し、�
 
 [**[kaiwaiRoll] Releases ページ**](https://github.com/MMM/kaiwaiRoll/releases)
 
-上記ページにアクセスし、最新リリースの項目から添付されている ZIP ファイル（例: `[あなたのツールの名前]_VerX.X.zip`）をダウンロードしてください。ファイルを展開すると、実行ファイル（.exe）と、ツールの実行に必要なファイルが含まれています。
+上記ページにアクセスし、最新リリースの項目から添付されている ZIP ファイル（`kaiwaiRoll_VerX.X.zip`）をダウンロードしてください。ファイルを展開すると、実行ファイル（.exe）と、ツールの実行に必要なファイルが含まれています。
 
 ## ライセンス
 
@@ -48,14 +48,7 @@ MIDIファイルの内容をピアノロール形式で視覚的に表示し、�
     * リポジトリ: [https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit](https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit)
     * ライセンス: [MIT License](https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit/blob/dev/LICENSE)
 
-各ライブラリのライセンス全文は、ダウンロードしたツールの配布物に含まれているライセンスファイル（例: `LICENSE_DryWetMidi.txt`, `LICENSE_MaterialDesignThemes.txt`）をご確認ください。
-
-## 貢献 (任意)
-
-バグの修正や機能追加など、このプロジェクトに貢献していただける場合は歓迎いたします。以下の方法でご協力いただけます。
-
-* バグ報告や機能提案: [GitHub Issues](https://github.com/MMM/kaiwaiRoll/issues) に新しい Issue を作成してください。
-* コードの修正・追加: リポジトリをフォークし、変更を加えて Pull Request を作成してください。
+各ライブラリのライセンス全文は、ダウンロードしたツールの配布物に含まれているライセンスファイル（`LICENSE_DryWetMidi.txt`, `LICENSE_MaterialDesignThemes.txt`）をご確認ください。
 
 ## お問い合わせ・フィードバック
 
