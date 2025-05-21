@@ -35,7 +35,7 @@ MIDIファイルの内容をピアノロール形式で視覚的に表示し、�
 
 最新バージョンは以下の GitHub Releases ページからダウンロードできます。
 
-[**kaiwaiRoll Releases ページ**](https://github.com/MMM/kaiwaiRoll/releases)
+[**kaiwaiRoll Releases ページ**](https://github.com/MMMM-msc/kaiwaiRoll/releases)
 
 上記ページにアクセスし、最新リリースの項目から添付されている ZIP ファイル（例: `kaiwaiRoll_VerX.X.X.zip`）をダウンロードしてください。ファイルを展開すると、実行ファイル（.exe）と、ツールの実行に必要なファイルが含まれています。
 
@@ -68,14 +68,14 @@ MIDIファイルの内容をピアノロール形式で視覚的に表示し、�
 
 バグの発見や、コードの改善提案など、このプロジェクトに貢献していただける場合は歓迎いたします。以下の方法でご協力いただけます。
 
-* バグ報告や機能提案: [GitHub Issues](https://github.com/MMM/kaiwaiRoll/issues) に新しい Issue を作成してください。
+* バグ報告や機能提案: [GitHub Issues](https://github.com/MMMM-msc/kaiwaiRoll/issues) に新しい Issue を作成してください。
 * コードの修正・追加: リポジトリをフォークし、変更を加えて Pull Request を作成してください。
 
 ## お問い合わせ・フィードバック
 
 ツールの使用に関するご質問、バグ報告、ご意見、ご要望などがございましたら、以下の方法でご連絡ください。
 
-* GitHub Issues: [https://github.com/MMM/kaiwaiRoll/issues](https://github.com/MMM/kaiwaiRoll/issues)
+* GitHub Issues: [https://github.com/MMMM-msc/kaiwaiRoll/issues](https://github.com/MMMM-msc/kaiwaiRoll/issues)
 * X (旧Twitter): [https://x.com/play_matitan](https://x.com/play_matitan)
 
 ---
