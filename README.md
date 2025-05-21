@@ -75,7 +75,7 @@ MIDIファイルの内容をピアノロール形式で視覚的に表示し、�
 
 ツールの使用に関するご質問、バグ報告、ご意見、ご要望などがございましたら、以下の方法でご連絡ください。
 
-* GitHub Issues: [https://github.com/MMM/kaiwaiRoll/issues](https://github.com/MMMM-msc/kaiwaiRoll/issues)
+* GitHub Issues: [https://github.com/MMMM-msc/kaiwaiRoll/issues](https://github.com/MMMM-msc/kaiwaiRoll/issues)
 * X (旧Twitter): [https://x.com/play_matitan](https://x.com/play_matitan)
 
 ---
